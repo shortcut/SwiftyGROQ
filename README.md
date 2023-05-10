@@ -7,7 +7,7 @@ GROQ (Graph-Relational Object Queries) is an open source query language created 
 
 ### Supported platforms
 
-This framework is distributed as a Swift Package and supports the following platform versions:  
+This library is distributed as a Swift Package and supports the following platform versions:  
 - iOS 11.0
 - macOS 10.13
 - tvOS 11.0
@@ -23,26 +23,13 @@ If you use a GROQ enabled database for your Apple platform app, performing queri
 - Not validated at compile time
 - Has a special syntax you need to learn before using it
 
-SwiftyGROQ attempts to solve many of these considerations by giving you a declarative and typesafe syntax.
+SwiftyGROQ attempts to solve many of these limitations by giving you a declarative and typesafe syntax.
 
-In short, a query like this:
-```js
-*[_type == 'movie' && releaseYear >= 1979 || isFavorite] | order(releaseYear, desc) {
-  "id": _id, title, releaseYear 
-}[0...10]
-```
-Can be written like this:
-```swift
-GROQuery {
-  Type("movie")
-  "releaseYear" >= 1979 || True(isFavorite)
-  Order("releaseYear", .descending)
-} fields: {
-  Field(renamedTo: "id", SpecialGROQKey.id),
-  "title",
-  "releaseYear"
-}[0..<10]
-```
+In short, a query like this:  
+![GROQ as a string](Resources/GROQString.png)  
+
+Can be written like this:  
+![GROQ as a string](Resources/GROQuery.png)
 
 ## Installation
 
@@ -51,7 +38,6 @@ To use this package in a SwiftPM project, you need to set it up as a package dep
 ```swift
 // swift-tools-version:5.7
 import PackageDescription
-
 
 let package = Package(
   name: "MyPackage",
@@ -112,21 +98,19 @@ GROQuery {
   Type("movie")
 }
 
-==
-
+// Is equivalent to
 GROQuery {
   Equal(SpecialGROQKey.type, "movie")
 }
 
-==
-
+// Which is the same as 
 GROQuery {
   Equal("_type", "movie")
 }
 ```
 
 ### Filter comparison operators
-Every comparison operator comes with a structure you can use, in addition to just using the operator itself. For instance `==`:
+Every comparison operator comes with a structure you can use, in addition to using the operator itself. For instance with the equals operator:
 
 ```swift
 // *[releaseDate == 2018]
@@ -134,7 +118,7 @@ GROQuery {
   Equal("releaseDate", 2018)
 }
 
-// *[releaseDate == 2018]
+// Can also be written as
 GROQuery {
   releaseDate == 2018
 }
@@ -153,7 +137,7 @@ Here is a list of all comparison operators and their corresponding structures:
 | `GreaterThanOrEqual` | `>=`      |
 | `In`                 | `in`      |
 | `And`                | `&&`      |
-| `Or`                 | `||`      |
+| `Or`                 | `\|\|`      |
 | `Match`              | `match`   |
 
 Examples: 
@@ -190,19 +174,19 @@ GROQuery {
 
 ### Slicing / Pagination
 
-Slicing can be done by using the `Slice` structure or by applying a subscript to your `GROQQuery`. Fetching documents by exclusive and inclusive ranges, as well as by a single index is supported.
+Slicing can be done by using the `Slice` structure or by applying a subscript to your `GROQuery`. Fetching documents by exclusive and inclusive ranges, as well as by a single index is supported.
 
 Examples: 
 ```swift
 // *[_type == "movie"][0...10]
 GROQuery {
   Type("movie")
-}[0..<10] // Exclusive range
+}[0..<10]
 
 // *[_type == "movie"][0..10]
 GROQuery {
   Type("movie")
-  Slice(0...10) // Inclusive range
+  Slice(0...10)
 }
 
 // *[_type == "movie"][1]
@@ -220,7 +204,7 @@ GROQuery {
   Type("movie")
 }.order(byField: SpecialGROQKey.createdAt, direction: .ascending)
 
-// // *[_type == "movie"] | order(_createdAt desc)
+// *[_type == "movie"] | order(_createdAt desc)
 GROQuery {
   Type("movie")
   Order("_createdAt", .descending)
@@ -232,12 +216,12 @@ GROQuery {
 }[0..<10]
   .order(byField: "releaseDate", direction: .descending)
   .order(byField: "_createdAt", direction: .ascending)
-// 
+
 ```
 
 ### Projection
 
-You can choose which keys to include in your response by specifying the keys you’d like in the `fields` block. Fields can be renamed and new fields can be made by performing functions.
+You can choose which keys to include in your response by specifying in the `fields` block. Fields can be renamed, and new fields can be made by invoking functions.
 
 ```swift
 /// *[_type == "movie"] { name, rating, releaseDate }[0...10]
@@ -281,7 +265,7 @@ Here is a list of all available function structures and their corresponding GROQ
 
 | Structure            | Function   |
 |----------------------|------------|
-| `Order`              | `| order`  |
+| `Order`              | `\| order`  |
 | `Count`              | `count`    |
 | `Coalesce`           | `coalesce` |
 | `Lower`*             | `lower`    |
@@ -290,8 +274,8 @@ Here is a list of all available function structures and their corresponding GROQ
 
 ## Roadmap
 
-The most important aspects of building queries can be used id SwiftyGROQ, but some parts have yet to be implemented. 
-As an emergency fix, you can use `Custom` to write GROQ as a string:
+The most important aspects of building queries can already be used id SwiftyGROQ, but some parts have yet to be implemented. 
+As an emergency fix, you can use `Custom` to write pure GROQ as a string:
 ```swift
 // *[@["1"]]
 GROQuery() {
