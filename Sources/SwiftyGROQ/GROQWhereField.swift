@@ -360,7 +360,7 @@ public struct Order: GROQWhereField, GROQueryRootField {
         " | order(\(variable) \(direction))"
     }
     
-    public init(_ variable: GROQKeyRepresentable,_ direction: Direction) {
+    public init(_ variable: GROQKeyRepresentable,_ direction: Direction = .ascending) {
         self.variable = variable.groqKeyText
         self.direction = direction.rawValue
     }
