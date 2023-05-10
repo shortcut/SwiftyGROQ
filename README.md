@@ -73,6 +73,8 @@ performDatabase(query: query)
 ## Documentation
 Queries can be constructed using a declarative syntax inspired by SwiftUI. 
 
+The documentation reference for GROQ can be found [here](https://www.sanity.io/docs/groq-reference).
+
 ### Get entire database
 ```swift
 // *
@@ -301,3 +303,9 @@ GROQuery() {
 - ❌ String functions
 - ❌ Array functions
 - ❌ Query Scoring Pipes
+
+## Contributing to SwiftyGROQ
+
+Contributions are greatly welcomed. At this point, many features are still missing. Feel free to open issues and pull requests.
+
+If you discover optimization routes, like saving space, memory or reducing build time—your sharing of knowledge is greatly appreciated.
