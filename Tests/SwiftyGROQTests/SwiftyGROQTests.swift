@@ -1,5 +1,5 @@
 import XCTest
-@testable import SwiftyGROQ
+import SwiftyGROQ
 
 final class SwiftyGROQTests: XCTestCase {
     
@@ -15,6 +15,14 @@ final class SwiftyGROQTests: XCTestCase {
         }
         
         XCTAssertEqual(query.query, "*[_id == \"abc.123\"]")
+    }
+    
+    func testTrue() throws {
+        let query = GROQuery {
+            True("isPublished")
+        }
+        
+        XCTAssertEqual(query.query, "*[isPublished]")
     }
     
     func testOperatorsIDEquals() throws {
@@ -302,6 +310,16 @@ final class SwiftyGROQTests: XCTestCase {
          .order(byField: "_createdAt", direction: .ascending)
         
         XCTAssertEqual(query.query, "*[_type == \"movie\"] | order(releaseDate desc) | order(_createdAt asc)")
+    }
+    
+    func testMultipleOrdersModifierWithSlicing() throws {
+        let query = GROQuery {
+            Type("movie")
+        }[0..<10]
+            .order(byField: "releaseDate", direction: .descending)
+            .order(byField: "_createdAt", direction: .ascending)
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] | order(releaseDate desc) | order(_createdAt asc)[0...10]")
     }
     
     func testOrderLowercase() throws {

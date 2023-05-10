@@ -7,15 +7,17 @@
 
 import Foundation
 
-struct Lower: GROQKeyRepresentable {
+/// Convert to lowercase
+/// `lower(key)`
+public struct Lower: GROQKeyRepresentable {
     
     let underlyingKey: GROQKeyRepresentable
     
-    init(_ key: GROQKeyRepresentable) {
+    public init(_ key: GROQKeyRepresentable) {
         self.underlyingKey = key
     }
     
-    var groqKeyText: String {
+    public var groqKeyText: String {
         "lower(\(underlyingKey.groqKeyText))"
     }
     

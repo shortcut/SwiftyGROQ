@@ -142,7 +142,7 @@ GROQuery {
 
 Here is a list of all comparison operators and their corresponding structures:
 
-| Operator             | Structure |
+| Structure            | Operator  |
 |----------------------|-----------|
 | `Not`                | `!`       |
 | `Equal`              | `==`      |
@@ -212,6 +212,28 @@ GROQuery {
 ```
 
 ### Ordering
+Sorting the result of the query is a common task and can be done using the `.order` modifier function, or using the `Order` structure.
+
+```swift 
+// *[_type == "movie"] | order(_createdAt asc)
+GROQuery {
+  Type("movie")
+}.order(byField: SpecialGROQKey.createdAt, direction: .ascending)
+
+// // *[_type == "movie"] | order(_createdAt desc)
+GROQuery {
+  Type("movie")
+  Order("_createdAt", .descending)
+}
+
+// *[_type == "movie"] | order(releaseDate desc) | order(_createdAt asc)[0...10]
+GROQuery {
+  Type("movie")
+}[0..<10]
+  .order(byField: "releaseDate", direction: .descending)
+  .order(byField: "_createdAt", direction: .ascending)
+// 
+```
 
 ### Projection
 
@@ -237,6 +259,14 @@ GROQuery {
   "title"
 }
 
+// *[_type == "movie"] { "actorCount": count(actors) }
+GROQuery {
+  Type("movie")
+} fields: {
+  All()
+  Count(newFieldName: "actorCount", "actors") // Make a new field, `actorCount`, storing count of array `actors`
+}
+
 // *[_type == "movie"] { ..., "rating": coalesce(rating, "unknown") }
 GROQuery {
   Type("movie")
@@ -245,6 +275,18 @@ GROQuery {
   Coalesce(newFieldName: "rating", "rating", fallbackValue: "unknown") // Provide fallback value if field is unset
 }
 ```
+
+### Functions
+Here is a list of all available function structures and their corresponding GROQ functions:
+
+| Structure            | Function   |
+|----------------------|------------|
+| `Order`              | `| order`  |
+| `Count`              | `count`    |
+| `Coalesce`           | `coalesce` |
+| `Lower`*             | `lower`    |
+
+\* `Lower` is only usable for keys at the moment.
 
 ## Roadmap
 
@@ -260,8 +302,7 @@ GROQuery() {
 - ✅ Basic filters (!, ==, !=, <, >, <=, >=, in, &&, ||, match)
 - ✅ Slice operations [pagination]
 - ✅ Ordering
-- ✅ Basic Projection
-- 🚧 Projection Methods (has: renaming fields, `count`, `coalescing`)
+- ✅ Projection
 - 🚧 Global functions (has: coalesce, count, lower*)
 - 🚧 Data Types (missing: Null, Object, Pair, Range, Path)
 - ❌ Special variables (missing: @, ^)

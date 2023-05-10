@@ -12,7 +12,6 @@ public protocol GROQWhereField {
 }
 
 public protocol GROQueryRootField {
-//    var attachKeyPath: WritableKeyPath<GROQuery, Self> { get }
     var attachKeyPath: String { get }
     var isArray: Bool { get }
 }
@@ -72,8 +71,8 @@ struct _Not: GROQWhereField {
 }
 
 @resultBuilder
-struct GROQueryBuilder {
-    static func buildBlock(_ components: GROQWhereField...) -> (GROQWhereField, [any GROQueryRootField]) {
+public struct GROQueryBuilder {
+    public static func buildBlock(_ components: GROQWhereField...) -> (GROQWhereField, [any GROQueryRootField]) {
         var setFields = [any GROQueryRootField]()
         let queryComponents = components.compactMap { component -> GROQWhereField? in
             if let component = component as? (any GROQueryRootField) {
@@ -89,22 +88,22 @@ struct GROQueryBuilder {
 }
 
 @resultBuilder
-struct GROQFieldAndBuilder {
-    static func buildBlock(_ components: GROQWhereField...) -> GROQWhereField {
+public struct GROQFieldAndBuilder {
+    public static func buildBlock(_ components: GROQWhereField...) -> GROQWhereField {
         _And(components)
     }
 }
 
 @resultBuilder
-struct GROQFieldOrBuilder {
-    static func buildBlock(_ components: GROQWhereField...) -> GROQWhereField {
+public struct GROQFieldOrBuilder {
+    public static func buildBlock(_ components: GROQWhereField...) -> GROQWhereField {
         _Or(components)
     }
 }
 
 @resultBuilder
-struct GROQFieldNotBuilder {
-    static func buildBlock(_ components: GROQWhereField...) -> GROQWhereField {
+public struct GROQFieldNotBuilder {
+    public static func buildBlock(_ components: GROQWhereField...) -> GROQWhereField {
         _Not(components)
     }
 }
@@ -323,15 +322,15 @@ public enum Slice: GROQWhereField, GROQueryRootField {
     case single(Int)
     case all
     
-    init(_ range: Range<Int>) {
+    public init(_ range: Range<Int>) {
         self = .exclusive(range.lowerBound, range.upperBound)
     }
     
-    init(_ range: ClosedRange<Int>) {
+    public init(_ range: ClosedRange<Int>) {
         self = .inclusive(range.lowerBound, range.upperBound)
     }
     
-    init(_ singleIndex: Int) {
+    public init(_ singleIndex: Int) {
         self = .single(singleIndex)
     }
     

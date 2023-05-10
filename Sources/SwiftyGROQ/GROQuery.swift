@@ -1,12 +1,12 @@
 import Foundation
 
-public class GROQuery: NSObject {
-    static let defaultStyle: Style = .multiline
+public final class GROQuery: NSObject {
+    public static let defaultStyle: Style = .multiline
     
     let scope: Scope = .all
     let style: Style
-    let whereFields: QueryBuilderHandler?
-    let fields: () -> String?
+    private let whereFields: QueryBuilderHandler?
+    private let fields: () -> String?
     
     @objc
     var underlyingSlice: Any? = Slice.all
@@ -20,31 +20,27 @@ public class GROQuery: NSObject {
         (underlyingOrder as? [Order]) ?? []
     }
     
-    typealias QueryBuilderHandler = () -> (any GROQWhereField, [any GROQueryRootField])
+    public typealias QueryBuilderHandler = () -> (any GROQWhereField, [any GROQueryRootField])
     
-    init(style: Style = GROQuery.defaultStyle, @GROQueryBuilder whereFields: @escaping QueryBuilderHandler, @GROQFieldBuilder fields: @escaping () -> String) {
+    public init(style: Style = GROQuery.defaultStyle, @GROQueryBuilder whereFields: @escaping QueryBuilderHandler, @GROQFieldBuilder fields: @escaping () -> String) {
         self.style = style
         self.whereFields = whereFields
         self.fields = fields
     }
     
-    init(style: Style = GROQuery.defaultStyle, @GROQueryBuilder whereFields: @escaping QueryBuilderHandler) {
+    public init(style: Style = GROQuery.defaultStyle, @GROQueryBuilder whereFields: @escaping QueryBuilderHandler) {
         self.style = style
         self.whereFields = whereFields
         self.fields = { nil }
     }
     
-    override init() {
+    public override init() {
         self.style = GROQuery.defaultStyle
         self.whereFields = nil
         self.fields = { nil }
     }
     
-    enum Scope: String {
-        case all = "*"
-    }
-    
-    var query: String {
+    public var query: String {
         var filterQuery = "\(scope.rawValue)"
         if let (queryFields, rootFields) = whereFields?() {
             rootFields.forEach {
@@ -75,17 +71,17 @@ public class GROQuery: NSObject {
         return query + orders + slice.groqWhereFieldText
     }
     
-    subscript(range: Range<Int>) -> GROQuery {
+    public subscript(range: Range<Int>) -> GROQuery {
         self.underlyingSlice = Slice(range)
         return self
     }
     
-    subscript(range: ClosedRange<Int>) -> GROQuery {
+    public subscript(range: ClosedRange<Int>) -> GROQuery {
         self.underlyingSlice = Slice(range)
         return self
     }
     
-    subscript(index: Int) -> GROQuery {
+    public subscript(index: Int) -> GROQuery {
         self.underlyingSlice = Slice(index)
         return self
     }
@@ -93,7 +89,11 @@ public class GROQuery: NSObject {
 
 extension GROQuery {
     
-    enum Style {
+    public enum Scope: String {
+        case all = "*"
+    }
+    
+    public enum Style {
         case multiline
         case oneline
         

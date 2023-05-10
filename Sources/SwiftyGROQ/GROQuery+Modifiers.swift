@@ -9,7 +9,7 @@ import Foundation
 
 extension GROQuery {
     
-    func order(byField key: GROQKeyRepresentable, direction: Order.Direction) -> Self {
+    public func order(byField key: GROQKeyRepresentable, direction: Order.Direction) -> Self {
         var orders = (self.underlyingOrder as? [Order]) ?? []
         orders.append(Order(key, direction))
         self.underlyingOrder = orders
