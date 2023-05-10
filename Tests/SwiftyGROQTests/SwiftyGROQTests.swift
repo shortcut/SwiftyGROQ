@@ -30,7 +30,6 @@ final class SwiftyGROQTests: XCTestCase {
             In(SpecialGROQKey.type, ["movie", "person"])
         }
         
-        print(query.query)
         XCTAssertEqual(query.query, "*[_type in [\"movie\", \"person\"]]")
     }
     
@@ -380,8 +379,6 @@ final class SwiftyGROQTests: XCTestCase {
         } fields: {
             Custom("\"popularity\": select(popularity > 20 => \"high\", popularity > 10 => \"medium\", popularity <= 10 => \"low\")")
         }
-        
-        print(query.query)
         
         let expected = "*[_type == \"movie\"] { \"popularity\": select(popularity > 20 => \"high\", popularity > 10 => \"medium\", popularity <= 10 => \"low\") }"
         
