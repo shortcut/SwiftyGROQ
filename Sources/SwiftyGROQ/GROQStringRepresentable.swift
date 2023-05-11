@@ -75,7 +75,7 @@ extension Date: GROQStringRepresentable {
 extension Dictionary: GROQStringRepresentable where Key == String, Value == GROQStringRepresentable {
     public var groqStringValue: String {
         do {
-            let json = try JSONSerialization.data(withJSONObject: self)
+            let json = try JSONSerialization.data(withJSONObject: self, options: .sortedKeys)
             guard let text = String(data: json, encoding: .utf8) else {
                 Logger.warn(.cannotEncodeDictionary(nil))
                 return "{}"
@@ -144,8 +144,8 @@ public struct Path: GROQStringRepresentable {
     public var groqStringValue: String {
         components
             .enumerated()
-            .reduce(into: "") { partialResult, next in
-                partialResult += next.element + (next.offset != components.count - 1 ? "." : "")
+            .reduce(into: "\"") { partialResult, next in
+                partialResult += next.element + (next.offset != components.count - 1 ? "." : "\"")
             }
     }
 }
