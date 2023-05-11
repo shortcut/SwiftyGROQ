@@ -88,6 +88,7 @@ extension Dictionary: GROQStringRepresentable where Key == String, Value == GROQ
     }
 }
 
+/// A pair of values. Can contain any other GROQ data type.
 public struct Pair<L: GROQStringRepresentable, R: GROQStringRepresentable>: GROQStringRepresentable {
     
     let left: L
@@ -123,5 +124,28 @@ extension ClosedRange: GROQStringRepresentable {
 extension NSRange: GROQStringRepresentable {
     public var groqStringValue: String {
         return "\(lowerBound)...\(upperBound)"
+    }
+}
+
+/// Respresents a node or branch in a tree. Can be used to reference a document.
+/// Wildcards can be used to match a generic path. `*` can be used to make one level genric, while `**` is multi-level.
+public struct Path: GROQStringRepresentable {
+    
+    let components: [String]
+    
+    public init(_ components: [String]) {
+        self.components = components
+    }
+    
+    public init(_ components: String...) {
+        self.components = components
+    }
+    
+    public var groqStringValue: String {
+        components
+            .enumerated()
+            .reduce(into: "") { partialResult, next in
+                partialResult += next.element + (next.offset != components.count - 1 ? "." : "")
+            }
     }
 }
