@@ -403,4 +403,204 @@ final class SwiftyGROQTests: XCTestCase {
         XCTAssertEqual(query.query, expected)
     }
     
+    func testStringDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" as GROQKeyRepresentable == "string"
+        }
+        
+        XCTAssertEqual(query.query, "*[key == \"string\"]")
+    }
+    
+    func testIntDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == 100
+        }
+        
+        XCTAssertEqual(query.query, "*[key == 100]")
+    }
+    
+    func testDoubleDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == 100.0 as Double
+        }
+        
+        XCTAssertEqual(query.query, "*[key == 100.0]")
+    }
+    
+    func testFloatDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == 100.0 as Float
+        }
+        
+        XCTAssertEqual(query.query, "*[key == 100.0]")
+    }
+    
+    func testFloatNaNDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Float.nan
+        }
+        
+        XCTAssertEqual(query.query, "*[key == null]")
+    }
+    
+    func testFloatInfinityDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Float.infinity
+        }
+        
+        XCTAssertEqual(query.query, "*[key == null]")
+    }
+    
+    func testDoubleNaNDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Double.nan
+        }
+        
+        XCTAssertEqual(query.query, "*[key == null]")
+    }
+    
+    func testDoubleInfinityDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Double.infinity
+        }
+        
+        XCTAssertEqual(query.query, "*[key == null]")
+    }
+    
+    func testNullDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == NSNull()
+        }
+        
+        XCTAssertEqual(query.query, "*[key == null]")
+    }
+    
+    func testOptionalSomeDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Optional.some("some")
+        }
+        
+        XCTAssertEqual(query.query, "*[key == \"some\"]")
+    }
+    
+    func testOptionalNoneDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Optional.none
+        }
+        
+        XCTAssertEqual(query.query, "*[key == null]")
+    }
+    
+    func testBoolTrueDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == true
+        }
+        
+        XCTAssertEqual(query.query, "*[key == true]")
+    }
+    
+    func testBoolFalseDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == false
+        }
+        
+        XCTAssertEqual(query.query, "*[key == false]")
+    }
+    
+    func testArrayDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == ["abc", 123, 3.14, true, NSNull()]
+        }
+        
+        XCTAssertEqual(query.query, "*[key == [\"abc\", 123, 3.14, true, null]]")
+    }
+    
+    func testDateDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Date(timeIntervalSince1970: 0)
+        }
+        
+        XCTAssertEqual(query.query, "*[key == \"1970-01-01T00:00:00Z\"]")
+    }
+    
+    func testDateISO8601FormatDataType() throws {
+        let date = Date()
+        let dateString = ISO8601DateFormatter().string(from: date)
+        let query = GROQuery(style: .oneline) {
+            "key" == date
+        }
+        
+        XCTAssertEqual(query.query, "*[key == \"\(dateString)\"]")
+    }
+    
+    func testDictionaryDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == [
+                "a": "abc",
+                "b": 123,
+                "c": ["a": 1, "b": 2],
+                "d": [true, false],
+                "e": NSNull()
+            ]
+        }
+        
+        XCTAssertEqual(query.query, "*[key == {\"a\":\"abc\",\"b\":123,\"c\":{\"a\":1,\"b\":2},\"d\":[true,false],\"e\":null}]")
+    }
+    
+    func testPairDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Pair("abc", 123)
+        }
+        
+        XCTAssertEqual(query.query, "*[key == \"abc\" => 123]")
+    }
+    
+    func testPairFromTupleDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Pair((1, 2))
+        }
+        
+        XCTAssertEqual(query.query, "*[key == 1 => 2]")
+    }
+    
+    func testRangeDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == 0..<10
+        }
+        
+        XCTAssertEqual(query.query, "*[key == 0...10]")
+    }
+    
+    func testClosedRangeDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == 0...10
+        }
+        
+        XCTAssertEqual(query.query, "*[key == 0..10]")
+    }
+    
+    func testNSRangeDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == NSRange(location: 0, length: 10)
+        }
+        
+        XCTAssertEqual(query.query, "*[key == 0...10]")
+    }
+    
+    func testPathFromArrayDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Path(["articles", "business", "finance", "4861"])
+        }
+        
+        XCTAssertEqual(query.query, "*[key == \"articles.business.finance.4861\"]")
+    }
+    
+    func testPathFromVariadicArgumentsDataType() throws {
+        let query = GROQuery(style: .oneline) {
+            "key" == Path("articles", "business", "finance", "*")
+        }
+        
+        XCTAssertEqual(query.query, "*[key == \"articles.business.finance.*\"]")
+    }
+    
 }

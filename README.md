@@ -5,14 +5,6 @@ A typesafe declarative syntax for making swifty GROQ queries.
 ## About
 GROQ (Graph-Relational Object Queries) is an open source query language created and maintained by [Sanity](https://www.sanity.io). GROQ allows you to filter, sort, paginate and specify which data you want to mention just a subset of its features. You can learn more about GROQ [here](https://www.sanity.io/docs/how-queries-work).
 
-### Supported platforms
-
-This library is distributed as a Swift Package and supports the following platform versions:  
-- iOS 11.0
-- macOS 10.13
-- tvOS 11.0
-- watchOS 4.0
-
 ### Motivation
 
 If you use a GROQ enabled database for your Apple platform app, performing queries require you to store the queries as a string in your codebase. This has the following disadvantages:  
@@ -57,6 +49,14 @@ let package = Package(
   ]
 )
 ```
+
+### Supported platforms
+
+This library supports the following platform versions:  
+- iOS 11.0
+- macOS 10.13
+- tvOS 11.0
+- watchOS 4.0
 
 ## Usage
 
@@ -262,6 +262,23 @@ GROQuery {
 }
 ```
 
+### Data Types
+You can use native Swift data types like `String`, `Int`, and `Date` when constructing queries. Here is a list of all available data types structures and their corresponding GROQ data type:
+
+| Swift data type           | GROQ data type   | Notes                                        |
+|---------------------------|------------------|----------------------------------------------|
+| `Bool`                    | `Boolean`        | --                                           |
+| `Float`, `Double`         | `Float`          | Infinity and NaN are coerced to `null`       |
+| `Int`                     | `Integer`        | --                                           |
+| `NSNull`, `Optional.none` | `Null`           | Unknown / no value                           |
+| `String`                  | `String`         | --                                           |
+| `Array`                   | `Array`          | Only other GROQ-compatible types are allowed |
+| `Dictionary`              | `Object`         | Only other GROQ-compatible types are allowed |
+| `Pair`                    | `Pair`           | You may pass a tuple to Pair                 |
+| `(Closed)Range`, `NSRange`| `Range`          | --                                           |
+| `Date`                    | `Datetime`       | Produces an ISO 8601 string                  |
+| `Path`                    | `Path`           | --                                           |
+
 ### Functions
 Here is a list of all available function structures and their corresponding GROQ functions:
 
@@ -289,8 +306,8 @@ GROQuery() {
 - ✅ Slice operations [pagination]
 - ✅ Ordering
 - ✅ Projection
+- ✅ Data Types
 - 🚧 Global functions (has: coalesce, count, lower*)
-- 🚧 Data Types (missing: Null, Object, Pair, Range, Path)
 - ❌ Special variables (missing: @, ^)
 - ❌ Conditionals
 - ❌ Joins
