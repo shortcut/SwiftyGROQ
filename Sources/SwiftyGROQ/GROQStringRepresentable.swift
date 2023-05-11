@@ -25,7 +25,7 @@ extension Double: GROQStringRepresentable {
     public var groqStringValue: String {
         if !self.isFinite {
             Logger.warn(.floatValueIsNotFinite)
-            return "null"
+            return NSNull().groqStringValue
         }
         
         return "\(self)"
@@ -36,10 +36,20 @@ extension Float: GROQStringRepresentable {
     public var groqStringValue: String {
         if !self.isFinite {
             Logger.warn(.floatValueIsNotFinite)
-            return "null"
+            return NSNull().groqStringValue
         }
         
         return "\(self)"
+    }
+}
+
+extension NSNull: GROQStringRepresentable {
+    public var groqStringValue: String { "null" }
+}
+
+extension Optional: GROQStringRepresentable where Wrapped == GROQStringRepresentable {
+    public var groqStringValue: String {
+        self.map { $0.groqStringValue } ?? NSNull().groqStringValue
     }
 }
 
