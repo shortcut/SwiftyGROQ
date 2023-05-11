@@ -107,3 +107,21 @@ public struct Pair<L: GROQStringRepresentable, R: GROQStringRepresentable>: GROQ
         "\(left.groqStringValue) => \(right.groqStringValue)"
     }
 }
+
+extension Range: GROQStringRepresentable {
+    public var groqStringValue: String {
+        return "\(lowerBound)...\(upperBound)"
+    }
+}
+
+extension ClosedRange: GROQStringRepresentable {
+    public var groqStringValue: String {
+        return "\(lowerBound)..\(upperBound)"
+    }
+}
+
+extension NSRange: GROQStringRepresentable {
+    public var groqStringValue: String {
+        return "\(lowerBound)...\(upperBound)"
+    }
+}
