@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: Data Types
+
 public protocol GROQStringRepresentable {
     var groqStringValue: String { get }
 }
@@ -20,11 +22,25 @@ extension Int: GROQStringRepresentable {
 }
 
 extension Double: GROQStringRepresentable {
-    public var groqStringValue: String { "\(self)" }
+    public var groqStringValue: String {
+        if !self.isFinite {
+            Logger.warn(.floatValueIsNotFinite)
+            return "null"
+        }
+        
+        return "\(self)"
+    }
 }
 
 extension Float: GROQStringRepresentable {
-    public var groqStringValue: String { "\(self)" }
+    public var groqStringValue: String {
+        if !self.isFinite {
+            Logger.warn(.floatValueIsNotFinite)
+            return "null"
+        }
+        
+        return "\(self)"
+    }
 }
 
 extension Bool: GROQStringRepresentable {
