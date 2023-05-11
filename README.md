@@ -262,6 +262,23 @@ GROQuery {
 }
 ```
 
+### Data Types
+You can use native Swift data types like `String`, `Int`, and `Date` when constructing queries. Here is a list of all available data types structures and their corresponding GROQ data type:
+
+| Swift data type           | GROQ data type   | Notes                                        |
+|---------------------------|------------------|----------------------------------------------|
+| `Bool`                    | `Boolean`        | --                                           |
+| `Float`, `Double`         | `Float`          | Infinity and NaN are coerced to `null`       |
+| `Int`                     | `Integer`        | --                                           |
+| `NSNull`, `Optional.none` | `Null`           | Unknown / no value                           |
+| `String`                  | `String`         | --                                           |
+| `Array`                   | `Array`          | Only other GROQ-compatible types are allowed |
+| `Dictionary`              | `Object`         | Only other GROQ-compatible types are allowed |
+| `Pair`                    | `Pair`           | You may pass a tuple to Pair                 |
+| `(Closed)Range`, `NSRange`| `Range`          | --                                           |
+| `Date`                    | `Datetime`       | Produces an ISO 8601 string                  |
+| `Path`                    | `Path`           | --                                           |
+
 ### Functions
 Here is a list of all available function structures and their corresponding GROQ functions:
 
@@ -289,8 +306,8 @@ GROQuery() {
 - ✅ Slice operations [pagination]
 - ✅ Ordering
 - ✅ Projection
+- ✅ Data Types (missing: Null, Object, Pair, Range, Path)
 - 🚧 Global functions (has: coalesce, count, lower*)
-- 🚧 Data Types (missing: Null, Object, Pair, Range, Path)
 - ❌ Special variables (missing: @, ^)
 - ❌ Conditionals
 - ❌ Joins
