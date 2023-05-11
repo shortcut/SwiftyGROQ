@@ -87,3 +87,23 @@ extension Dictionary: GROQStringRepresentable where Key == String, Value == GROQ
         }
     }
 }
+
+public struct Pair<L: GROQStringRepresentable, R: GROQStringRepresentable>: GROQStringRepresentable {
+    
+    let left: L
+    let right: R
+    
+    public init(_ left: L, _ right: R) {
+        self.left = left
+        self.right = right
+    }
+    
+    public init(_ tuple: (left: L, right: R)) {
+        self.left = tuple.left
+        self.right = tuple.right
+    }
+    
+    public var groqStringValue: String {
+        "\(left.groqStringValue) => \(right.groqStringValue)"
+    }
+}
