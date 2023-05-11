@@ -31,10 +31,19 @@ extension Logger {
         /// Warning to present if a float value is `NaN` or `infinity`.
         case floatValueIsNotFinite
         
+        /// Warning to present if a dictionary cannot be encoded.
+        case cannotEncodeDictionary(Error?)
+        
         var message: String {
             switch self {
             case .floatValueIsNotFinite:
                 return "The floating point value provided is NaN or infinite. Will be coerced to null."
+            case .cannotEncodeDictionary(let error):
+                let base = "The dictionary cannot be encoded. Coercing to empty dictionary. "
+                if let error {
+                    return base + "Error: \(error.localizedDescription)"
+                }
+                return base
             }
         }
     }

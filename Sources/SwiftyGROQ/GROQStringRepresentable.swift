@@ -71,3 +71,19 @@ extension Array: GROQStringRepresentable where Element == GROQStringRepresentabl
 extension Date: GROQStringRepresentable {
     public var groqStringValue: String { ISO8601DateFormatter().string(from: self).groqStringValue }
 }
+
+extension Dictionary: GROQStringRepresentable where Key == String, Value == GROQStringRepresentable {
+    public var groqStringValue: String {
+        do {
+            let json = try JSONSerialization.data(withJSONObject: self)
+            guard let text = String(data: json, encoding: .utf8) else {
+                Logger.warn(.cannotEncodeDictionary(nil))
+                return "{}"
+            }
+            return text
+        } catch {
+            Logger.warn(.cannotEncodeDictionary(error))
+            return "{}"
+        }
+    }
+}
