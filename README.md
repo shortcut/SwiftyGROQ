@@ -5,14 +5,6 @@ A typesafe declarative syntax for making swifty GROQ queries.
 ## About
 GROQ (Graph-Relational Object Queries) is an open source query language created and maintained by [Sanity](https://www.sanity.io). GROQ allows you to filter, sort, paginate and specify which data you want to mention just a subset of its features. You can learn more about GROQ [here](https://www.sanity.io/docs/how-queries-work).
 
-### Supported platforms
-
-This library is distributed as a Swift Package and supports the following platform versions:  
-- iOS 11.0
-- macOS 10.13
-- tvOS 11.0
-- watchOS 4.0
-
 ### Motivation
 
 If you use a GROQ enabled database for your Apple platform app, performing queries require you to store the queries as a string in your codebase. This has the following disadvantages:  
@@ -57,6 +49,14 @@ let package = Package(
   ]
 )
 ```
+
+### Supported platforms
+
+This library supports the following platform versions:  
+- iOS 11.0
+- macOS 10.13
+- tvOS 11.0
+- watchOS 4.0
 
 ## Usage
 
