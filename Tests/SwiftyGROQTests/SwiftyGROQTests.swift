@@ -844,4 +844,32 @@ final class SwiftyGROQTests: XCTestCase {
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": upper(userId) }")
     }
     
+    func testToStringWhereField() throws {
+        let query = GROQuery(style: .oneline) {
+            ToString("userId") == "123456"
+        }
+        
+        XCTAssertEqual(query.query, "*[string(userId) == \"123456\"]")
+    }
+    
+    func testToStringField() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            ToString(newFieldName: "stringInteger", field: "21")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"stringInteger\": string(21) }")
+    }
+    
+    func testToStringFieldNoNewFieldName() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            ToString(field: "stringInteger")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"stringInteger\": string(stringInteger) }")
+    }
+    
 }

@@ -284,12 +284,18 @@ Here is a list of all available function structures and their corresponding GROQ
 
 | Structure            | Function   |
 |----------------------|------------|
-| `Order`              | `\| order`  |
+| `Order`              | `\| order` |
 | `Count`              | `count`    |
 | `Coalesce`           | `coalesce` |
-| `Lower`*             | `lower`    |
-
-\* `Lower` is only usable for keys at the moment.
+| `Lower`              | `lower`    |
+| `Upper`              | `upper`    |
+| `DateTime`           | `dateTime` |
+| `Now`                | `now`      |
+| `Defined`            | `defined`  |
+| `Identity`           | `identity` |
+| `Length`             | `length`   |
+| `Path`               | `path`     |
+| `ToString`           | `string`   |
 
 ## Roadmap
 
@@ -307,7 +313,7 @@ GROQuery() {
 - ✅ Ordering
 - ✅ Projection
 - ✅ Data Types
-- 🚧 Global functions (has: coalesce, count, lower*)
+- 🚧 Global functions (missing: references, round, select, score, string)
 - ❌ Special variables (missing: @, ^)
 - ❌ Conditionals
 - ❌ Joins
