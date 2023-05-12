@@ -69,7 +69,24 @@ extension Array: GROQStringRepresentable where Element == GROQStringRepresentabl
 }
 
 extension Date: GROQStringRepresentable {
-    public var groqStringValue: String { ISO8601DateFormatter().string(from: self).groqStringValue }
+    
+    public func rfc3339String() -> String {
+        let formatter = self.rfc3339DateFormatter()
+        return formatter.string(from: self)
+    }
+
+    /// Date formatters are not thread-safe, so use a thread-local instance
+    private func rfc3339DateFormatter() -> DateFormatter {
+        let en_US_POSIX = Locale(identifier: "en_US_POSIX")
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = en_US_POSIX
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.SS'Z'"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return dateFormatter
+    }
+
+    public var groqStringValue: String {
+        self.rfc3339String().groqStringValue }
 }
 
 extension Dictionary: GROQStringRepresentable where Key == String, Value == GROQStringRepresentable {

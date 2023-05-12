@@ -530,12 +530,21 @@ final class SwiftyGROQTests: XCTestCase {
             "key" == Date(timeIntervalSince1970: 0)
         }
         
-        XCTAssertEqual(query.query, "*[key == \"1970-01-01T00:00:00Z\"]")
+        XCTAssertEqual(query.query, "*[key == \"1970-01-01T00:00:00.00Z\"]")
     }
     
-    func testDateISO8601FormatDataType() throws {
+    func testDateNotISO8601FormatDataType() throws {
         let date = Date()
         let dateString = ISO8601DateFormatter().string(from: date)
+        let query = GROQuery(style: .oneline) {
+            "key" == date
+        }
+        XCTAssertNotEqual(query.query, "*[key == \"\(dateString)\"]")
+    }
+    
+    func testDateRFC3339FormatDataType() throws {
+        let date = Date(timeIntervalSince1970: 482196050.520)
+        let dateString = "1985-04-12T23:20:50.52Z"
         let query = GROQuery(style: .oneline) {
             "key" == date
         }
@@ -611,6 +620,80 @@ final class SwiftyGROQTests: XCTestCase {
         }
         
         XCTAssertEqual(query.query, "*[key == \"articles.business.finance.*\"]")
+    }
+    
+    func testNowFunction() throws {
+        let query = GROQuery(style: .oneline) {
+            DateTime(Now()) < DateTime("publishedAt")
+        }
+        
+        XCTAssertEqual(query.query, "*[dateTime(now()) < dateTime(publishedAt)]")
+    }
+    
+    func testDateTimeFunction() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            DateTime(newFieldName: "serverTime", field: Now())
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"serverTime\": dateTime(now()) }")
+    }
+    
+    func testDateTimeAdd() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            DateTime(newFieldName: "timeSincePublished", field: Now()).adding(DateTime(field: "publishedAt"))
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"timeSincePublished\": dateTime(now()) + dateTime(publishedAt) }")
+    }
+    
+    func testDateTimeAddOperator() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            DateTime(newFieldName: "timeSincePublished", field: Now()) + DateTime(field: "publishedAt")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"timeSincePublished\": dateTime(now()) + dateTime(publishedAt) }")
+    }
+    
+    func testDateTimeSubtract() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            DateTime(newFieldName: "timeSincePublished", field: Now()).subtracting(DateTime(field: "publishedAt"))
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"timeSincePublished\": dateTime(now()) - dateTime(publishedAt) }")
+    }
+    
+    func testDateTimeSubtractOperator() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            DateTime(newFieldName: "timeSincePublished", field: Now()) - DateTime(field: "publishedAt")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"timeSincePublished\": dateTime(now()) - dateTime(publishedAt) }")
+    }
+    
+    func testDateTimeHeterogenicConcatenation() throws {
+        let query = GROQuery(style: .oneline) {
+            DateTime(SpecialGROQKey.updatedAt).adding(60) > DateTime(Now()).subtracting(60*60*24*7)
+        }
+        
+        XCTAssertEqual(query.query, "*[dateTime(_updatedAt) + 60 > dateTime(now()) - \(60*60*24*7)]")
+    }
+    
+    func testDateTimeHeterogenicConcatenationOperator() throws {
+        let query = GROQuery(style: .oneline) {
+            DateTime("_updatedAt") + 60 > DateTime(Now()) - 60
+        }
+        
+        XCTAssertEqual(query.query, "*[dateTime(_updatedAt) + 60 > dateTime(now()) - 60]")
     }
     
 }
