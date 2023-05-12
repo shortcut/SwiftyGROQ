@@ -37,14 +37,17 @@ public struct DefinedWhereField: GROQWhereField {
     
 }
 
+/// Returns `true` if the argument is non-`null`, otherwise `false`.
 public func Defined(newFieldName nameSubstitution: GROQFieldKey, field: GROQField) -> DefinedField {
     DefinedField(newFieldName: nameSubstitution, field: field)
 }
 
+/// Returns `true` if the argument is non-`null`, otherwise `false`.
 public func Defined(field: GROQField) -> DefinedField {
     DefinedField(newFieldName: field.groqFieldText.groqKeySafeRepresentation, field: field)
 }
 
+/// Returns `true` if the argument is non-`null`, otherwise `false`.
 public func Defined(_ field: GROQKeyRepresentable) -> DefinedWhereField {
     DefinedWhereField(field)
 }

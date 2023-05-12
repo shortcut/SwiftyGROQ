@@ -714,6 +714,14 @@ final class SwiftyGROQTests: XCTestCase {
         XCTAssertEqual(query.query, "*[defined(awardWinner)]")
     }
     
+    func testDefinedWhereFieldEqualsTrue() throws {
+        let query = GROQuery(style: .oneline) {
+            Defined("awardWinner") == true
+        }
+        
+        XCTAssertEqual(query.query, "*[defined(awardWinner) == true]")
+    }
+    
     func testDefinedField() throws {
         let query = GROQuery(style: .oneline) {
             Type("movie")
@@ -732,6 +740,24 @@ final class SwiftyGROQTests: XCTestCase {
         }
         
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"awardWinner\": defined(awardWinner) }")
+    }
+    
+    func testIdentityWhereField() throws {
+        let query = GROQuery(style: .oneline) {
+            "userId" == Identity()
+        }
+        
+        XCTAssertEqual(query.query, "*[userId == identity()]")
+    }
+    
+    func testIdentityField() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Identity(newFieldName: "userId")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": identity() }")
     }
     
 }

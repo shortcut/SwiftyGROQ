@@ -7,8 +7,19 @@
 
 import Foundation
 
-public protocol GROQWhereField {
+public protocol GROQWhereField: GROQKeyRepresentable, GROQStringRepresentable {
     var groqWhereFieldText: String { get }
+}
+
+extension GROQWhereField {
+    
+    public var groqStringValue: String {
+        self.groqWhereFieldText
+    }
+    
+    public var groqKeyText: String {
+        self.groqWhereFieldText
+    }
 }
 
 public protocol GROQueryRootField {
