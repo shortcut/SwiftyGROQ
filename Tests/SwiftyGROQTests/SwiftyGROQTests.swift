@@ -640,6 +640,16 @@ final class SwiftyGROQTests: XCTestCase {
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"serverTime\": dateTime(now()) }")
     }
     
+    func testDateTimeFunctionNoNewFieldName() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            DateTime(field: Now())
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"now\": dateTime(now()) }")
+    }
+    
     func testDateTimeAdd() throws {
         let query = GROQuery(style: .oneline) {
             Type("movie")
@@ -694,6 +704,34 @@ final class SwiftyGROQTests: XCTestCase {
         }
         
         XCTAssertEqual(query.query, "*[dateTime(_updatedAt) + 60 > dateTime(now()) - 60]")
+    }
+    
+    func testDefinedWhereField() throws {
+        let query = GROQuery(style: .oneline) {
+            Defined("awardWinner")
+        }
+        
+        XCTAssertEqual(query.query, "*[defined(awardWinner)]")
+    }
+    
+    func testDefinedField() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Defined(newFieldName: "isAwardWinner", field: "awardWinner")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"isAwardWinner\": defined(awardWinner) }")
+    }
+    
+    func testDefinedFieldNoNewFieldName() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Defined(field: "awardWinner")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"awardWinner\": defined(awardWinner) }")
     }
     
 }
