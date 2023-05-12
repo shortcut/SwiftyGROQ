@@ -816,4 +816,32 @@ final class SwiftyGROQTests: XCTestCase {
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": lower(userId) }")
     }
     
+    func testUpperWhereField() throws {
+        let query = GROQuery(style: .oneline) {
+            Upper("userId") == "ABC123"
+        }
+        
+        XCTAssertEqual(query.query, "*[upper(userId) == \"ABC123\"]")
+    }
+    
+    func testUpperField() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Upper(newFieldName: "upper", field: "userId")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"upper\": upper(userId) }")
+    }
+    
+    func testUpperFieldNoNewFieldName() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Upper(field: "userId")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": upper(userId) }")
+    }
+    
 }
