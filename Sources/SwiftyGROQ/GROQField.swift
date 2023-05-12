@@ -90,16 +90,28 @@ public struct Coalesce: GROQField {
     
     let nameSubstitution: String
     let fieldName: GROQField
+    let fallbackFields: [GROQField]
     let fallbackValue: GROQStringRepresentable
     
-    public init(newFieldName nameSubstitution: GROQFieldKey, _ field: GROQField, fallbackValue: GROQStringRepresentable) {
+    public init(newFieldName nameSubstitution: GROQFieldKey, field: GROQField, fallbackValue: GROQStringRepresentable) {
         self.nameSubstitution = nameSubstitution.groqFieldKeyText
         self.fieldName = field
         self.fallbackValue = fallbackValue
+        self.fallbackFields = []
+    }
+    
+    public init(newFieldName nameSubstitution: GROQFieldKey, field: GROQField, fallbackFields: [GROQField], fallbackValue: GROQStringRepresentable) {
+        self.nameSubstitution = nameSubstitution.groqFieldKeyText
+        self.fieldName = field
+        self.fallbackValue = fallbackValue
+        self.fallbackFields = fallbackFields
     }
     
     public var groqFieldText: String {
-        "\"\(nameSubstitution)\": coalesce(\(fieldName.groqFieldText), \(fallbackValue.groqStringValue))"
+        let fallbackKeysString = self.fallbackFields.isEmpty ? "" : ", " + self.fallbackFields
+            .map { $0.groqFieldText }
+            .joined(separator: ", ")
+        return "\"\(nameSubstitution)\": coalesce(\(fieldName.groqFieldText)\(fallbackKeysString), \(fallbackValue.groqStringValue))"
     }
     
 }

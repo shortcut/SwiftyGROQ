@@ -366,7 +366,7 @@ final class SwiftyGROQTests: XCTestCase {
         let query = GROQuery(style: .oneline) {
             Type("movie")
         } fields: {
-            Coalesce(newFieldName: "rating", "rating", fallbackValue: "unknown")
+            Coalesce(newFieldName: "rating", field: "rating", fallbackValue: "unknown")
         }
         
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"rating\": coalesce(rating, \"unknown\") }")
@@ -377,10 +377,20 @@ final class SwiftyGROQTests: XCTestCase {
             Type("movie")
         } fields: {
             All()
-            Coalesce(newFieldName: "rating", "rating", fallbackValue: "unknown")
+            Coalesce(newFieldName: "rating", field: "rating", fallbackValue: "unknown")
         }
         
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { ..., \"rating\": coalesce(rating, \"unknown\") }")
+    }
+    
+    func testCoalesceFieldProjectionWithFallbackKeys() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Coalesce(newFieldName: "rating", field: "rating", fallbackFields: ["popularity", "reviewScore"], fallbackValue: "unknown")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"rating\": coalesce(rating, popularity, reviewScore, \"unknown\") }")
     }
     
     func testCustomWhereQuery() throws {
