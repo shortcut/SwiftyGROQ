@@ -760,4 +760,32 @@ final class SwiftyGROQTests: XCTestCase {
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": identity() }")
     }
     
+    func testLengthWhereField() throws {
+        let query = GROQuery(style: .oneline) {
+            Length("userId") - 1 < 10
+        }
+        
+        XCTAssertEqual(query.query, "*[length(userId) - 1 < 10]")
+    }
+    
+    func testLengthField() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Length(newFieldName: "length", field: "userId")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"length\": length(userId) }")
+    }
+    
+    func testLengthFieldNoNewFieldName() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Length(field: "userId")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": length(userId) }")
+    }
+    
 }
