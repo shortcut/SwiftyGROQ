@@ -788,4 +788,32 @@ final class SwiftyGROQTests: XCTestCase {
         XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": length(userId) }")
     }
     
+    func testLowerWhereField() throws {
+        let query = GROQuery(style: .oneline) {
+            Lower("userId") == "abc123"
+        }
+        
+        XCTAssertEqual(query.query, "*[lower(userId) == \"abc123\"]")
+    }
+    
+    func testLowerField() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Lower(newFieldName: "lower", field: "userId")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"lower\": lower(userId) }")
+    }
+    
+    func testLowerFieldNoNewFieldName() throws {
+        let query = GROQuery(style: .oneline) {
+            Type("movie")
+        } fields: {
+            Lower(field: "userId")
+        }
+        
+        XCTAssertEqual(query.query, "*[_type == \"movie\"] { \"userId\": lower(userId) }")
+    }
+    
 }

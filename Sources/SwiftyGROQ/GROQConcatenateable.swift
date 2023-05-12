@@ -10,9 +10,14 @@ import Foundation
 public protocol GROQConcatenateable {
     var leftHandSideConcatenatedQroqFieldText: String { get }
     var rightHandSideConcatenatedQroqFieldText: String { get }
+    var leftHandSidePrefix: String? { get }
 }
 
-extension Int: GROQConcatenateable {
+extension GROQConcatenateable {
+    public var leftHandSidePrefix: String? { nil }
+}
+
+extension Int: GROQConcatenateable, GROQHeterogenicallyConcatenateable {
     public var leftHandSideConcatenatedQroqFieldText: String {
         self.groqStringValue
     }
@@ -22,7 +27,7 @@ extension Int: GROQConcatenateable {
     }
 }
 
-extension String: GROQConcatenateable {
+extension String: GROQConcatenateable, GROQHeterogenicallyConcatenateable {
     public var leftHandSideConcatenatedQroqFieldText: String {
         self.groqStringValue
     }
@@ -82,7 +87,8 @@ public struct ConcatenatedGROQField<T: GROQConcatenateable, U: GROQConcatenateab
     }
     
     public var groqFieldText: String {
-        "\(lhs.leftHandSideConcatenatedQroqFieldText) \(concatenationOperator) \(rhs.rightHandSideConcatenatedQroqFieldText)"
+        let prefix = lhs.leftHandSidePrefix ?? rhs.leftHandSidePrefix ?? ""
+        return "\(prefix)\(lhs.leftHandSideConcatenatedQroqFieldText) \(concatenationOperator) \(rhs.rightHandSideConcatenatedQroqFieldText)"
     }
     
     public var groqStringValue: String {

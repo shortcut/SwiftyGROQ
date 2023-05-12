@@ -1,5 +1,5 @@
 //
-//  Length.swift
+//  Lower.swift
 //  
 //
 //  Created by Eskil Gjerde Sviggum on 12/05/2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct LengthField: GROQField, GROQHeterogenicallyConcatenateable {
+public struct LowerField: GROQField, GROQHeterogenicallyConcatenateable {
     
     let nameSubstitution: String
     let fieldName: GROQField
@@ -22,7 +22,7 @@ public struct LengthField: GROQField, GROQHeterogenicallyConcatenateable {
     }
     
     public var rightHandSideConcatenatedQroqFieldText: String {
-        "length(\(fieldName.groqFieldText))"
+        "lower(\(fieldName.groqFieldText))"
     }
     
     public var leftHandSideConcatenatedQroqFieldText: String {
@@ -31,7 +31,7 @@ public struct LengthField: GROQField, GROQHeterogenicallyConcatenateable {
     
 }
 
-public struct LengthWhereField: GROQWhereField, GROQKeyRepresentable, GROQStringRepresentable, GROQHeterogenicallyConcatenateable {
+public struct LowerWhereField: GROQWhereField, GROQKeyRepresentable, GROQStringRepresentable, GROQHeterogenicallyConcatenateable {
     
     let fieldName: String
     
@@ -40,7 +40,7 @@ public struct LengthWhereField: GROQWhereField, GROQKeyRepresentable, GROQString
     }
     
     public var groqWhereFieldText: String {
-        "length(\(fieldName))"
+        "lower(\(fieldName))"
     }
     
     public var groqKeyText: String {
@@ -61,20 +61,17 @@ public struct LengthWhereField: GROQWhereField, GROQKeyRepresentable, GROQString
     
 }
 
-/// Returns the length of the argument, either the number of elements in an array
-/// or the number of Unicode characters in a string.
-public func Length(newFieldName nameSubstitution: GROQFieldKey, field: GROQField) -> LengthField {
-    LengthField(newFieldName: nameSubstitution, field: field)
+/// Takes a string and returns the string in all lowercase characters.
+public func Lower(newFieldName nameSubstitution: GROQFieldKey, field: GROQField) -> LowerField {
+    LowerField(newFieldName: nameSubstitution, field: field)
 }
 
-/// Returns the length of the argument, either the number of elements in an array
-/// or the number of Unicode characters in a string.
-public func Length(field: GROQField) -> LengthField {
-    LengthField(newFieldName: field.groqFieldText.groqKeySafeRepresentation, field: field)
+/// Takes a string and returns the string in all lowercase characters.
+public func Lower(field: GROQField) -> LowerField {
+    LowerField(newFieldName: field.groqFieldText.groqKeySafeRepresentation, field: field)
 }
 
-/// Returns the length of the argument, either the number of elements in an array
-/// or the number of Unicode characters in a string.
-public func Length(_ field: GROQKeyRepresentable) -> LengthWhereField {
-    LengthWhereField(field)
+/// Takes a string and returns the string in all lowercase characters.
+public func Lower(_ field: GROQKeyRepresentable) -> LowerWhereField {
+    LowerWhereField(field)
 }
